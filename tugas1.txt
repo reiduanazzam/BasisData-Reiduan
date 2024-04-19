@@ -1,0 +1,860 @@
+MariaDB [(none)]> create database dbpegawai1;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| dbpegawai          |
+| dbpegawai1         |
+| dbpos              |
+| dbsi07             |
+| dbtesting          |
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+10 rows in set (0.092 sec)
+
+MariaDB [(none)]> USE dbpegawai1;
+Database changed
+MariaDB [dbpegawai1]> CREATE TABLE divisi
+    -> (id int primary key auto_increment,
+    -> nama varchar(30) not null unique);
+Query OK, 0 rows affected (0.029 sec)
+
+MariaDB [dbpegawai1]> DESC divisi;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.045 sec)
+
+MariaDB [dbpegawai1]> CREATE TABLE jabatan
+    -> (id int primary key auto_increment,
+    -> nama varchar(30) not null unique);
+Query OK, 0 rows affected (0.022 sec)
+
+MariaDB [dbpegawai1]> DESC jabatan;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.021 sec)
+
+MariaDB [dbpegawai1]> CREATE TABLE pegawai
+    -> (id int primary key auto_increment,
+    -> nip char(5) not null,
+    -> nama varchar(30) not null,
+    -> gender enum('Laki-Laki','Perempuan') not null,
+    -> tmpt_lahir varchar(30) not null,
+    -> tgl_lahir date not null,
+    -> iddivisi int not null references divisi(id),
+    -> idjabatan int not null references jabatan(id),
+    -> alamat text);
+Query OK, 0 rows affected (0.043 sec)
+
+MariaDB [dbpegawai1]> DESC pegawai;
++------------+-------------------------------+------+-----+---------+----------------+
+| Field      | Type                          | Null | Key | Default | Extra          |
++------------+-------------------------------+------+-----+---------+----------------+
+| id         | int(11)                       | NO   | PRI | NULL    | auto_increment |
+| nip        | char(5)                       | NO   |     | NULL    |                |
+| nama       | varchar(30)                   | NO   |     | NULL    |                |
+| gender     | enum('Laki-Laki','Perempuan') | NO   |     | NULL    |                |
+| tmpt_lahir | varchar(30)                   | NO   |     | NULL    |                |
+| tgl_lahir  | date                          | NO   |     | NULL    |                |
+| iddivisi   | int(11)                       | NO   |     | NULL    |                |
+| idjabatan  | int(11)                       | NO   |     | NULL    |                |
+| alamat     | text                          | YES  |     | NULL    |                |
++------------+-------------------------------+------+-----+---------+----------------+
+9 rows in set (0.049 sec)
+
+MariaDB [dbpegawai1]> SHOW TABLES;
++----------------------+
+| Tables_in_dbpegawai1 |
++----------------------+
+| divisi               |
+| jabatan              |
+| pegawai              |
++----------------------+
+3 rows in set (0.029 sec)
+
+MariaDB [dbpegawai1]> INSERT INTO divisi
+    -> (nama) values
+    -> ('SDM'), ('Keuangan'), ('Marketing'), ('IT');
+Query OK, 4 rows affected (0.094 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai1]> SELECT * FROM divisi;
++----+-----------+
+| id | nama      |
++----+-----------+
+|  4 | IT        |
+|  2 | Keuangan  |
+|  3 | Marketing |
+|  1 | SDM       |
++----+-----------+
+4 rows in set (0.033 sec)
+
+MariaDB [dbpegawai1]> INSERT INTO jabatan
+    -> (nama) values
+    -> ('Direktur'), ('Manajer'), ('Asisten Manajer'), ('Staf');
+Query OK, 4 rows affected (0.030 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai1]> SELECT * FROM jabatan;
++----+-----------------+
+| id | nama            |
++----+-----------------+
+|  3 | Asisten Manajer |
+|  1 | Direktur        |
+|  2 | Manajer         |
+|  4 | Staf            |
++----+-----------------+
+4 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> INSERT INTO pegawai
+    -> (nip,nama,gender,tmpt_lahir,iddivisi,idjabatan,alamat) values
+    -> (nip,nama,gender,tmpt_lahir,tgl_lahir,iddivisi,idjabatan,alamat) values
+    -> (660,'James Vowles','Laki-Laki','London',19800401,1,1,'Milton Keynes'),
+    -> (661, 'Toto Wolf','Laki-Laki','Birmingham',19770905,1,2,'Silverstone'),
+    -> (662,'Cristian Horner','Laki-Laki','Wales',19751014,1,3,'Brisbane'),
+    -> (663,'Adrian Newey','Laki-Laki','Manchester',19680817,1,4,'Silverstone'),
+    -> (664,'Max Verstapeen','Laki-Laki','Amsterdam',19891201,1,4,'Assen'),
+    -> (665,'Daniel Kvyat','Laki-Laki','Moskow',19900403,2,1,'Manila'),
+    -> (666,'Lance Stroll','Laki-Laki','Montreal','19930913,2,2,'New York'),
+    '> '/
+    -> (666,'Lance Stroll','Laki-Laki','Montreal',19930913,2,2,'New York'),
+    -> (667,'Sean Gelael','Laki-Laki','Jakarta',19940524,2,3,'Spielberg'),
+    -> (668,'Nico Hulcenberg','Laki-Laki','Berlin',19880709,2,4,'Spielberg'),
+    -> (669,'Kevin Magnussen','Laki-Laki,'Berlin',19850417,2,4,'Birmingham'),
+    '> (670,'Sergio Perez','Laki-Laki','Mexico City',19900717,3,1,'Silverstone'),
+    '> (671,'Yuki Tsunoda','Laki-Laki','Tokyo',19990818,3,2,'Shanghai'),
+    '> (672,'Zhou Guanyu','Laki-Laki','Shanghai',19990203,3,3,'Shanghai'),
+    '> (673,'Liam Lawson','Laki-Laki','Perth',20000301,3,4,'Shanghai'),
+    '> '/
+    -> (669,'Kevin Magnussen','Laki-Laki','Berlin',19850417,2,4,'Birmingham'),
+    -> (670,'Sergio Perez','Laki-Laki','Mexico City',19900717,3,1,'Silverstone'),
+    -> (671,'Yuki Tsunoda','Laki-Laki','Tokyo',19990818,3,2,'Shanghai'),
+    -> (672,'Zhou Guanyu','Laki-Laki','Shanghai',19990203,3,3,'Shanghai'),
+    -> (673,'Liam Lawson','Laki-Laki','Perth',20000301,3,4,'Shanghai'),
+    -> (674,'Daniel Ricciardo','Laki-Laki','Austin',19950929,3,4,'Shanghai'),
+    -> (675,'Fernando Alonso','Laki-Laki','Madrid',19800923,4,1,'Barcelona'),
+    -> (676,'Carlos Sainz','Laki-Laki','Barcelona',19980905,4,2,'Barcelona'),
+    -> (676,'Carles Lecler','Laki-Laki','Monaco',19991205,4,3,'Barcelona'),
+    -> (677,'Carles Leclerc','Laki-Laki','Monaco',19991205,4,3,'Barcelona'),
+    -> (678,'George Russel','Laki-Laki','London',19970403,4,4,'Milton Keynes'),
+    -> (679,'Lewis Hamilton','Laki-Laki','London',19900719,4,4,'Milton Keynes'),
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'values
+(660,'James Vowles','Laki-Laki','London',19800401,1,1,'Milton Keynes')...' at line 4
+MariaDB [dbpegawai1]> ;
+ERROR: No query specified
+
+MariaDB [dbpegawai1]> INSERT INTO pegawai
+    -> (nip,nama,gender,tmpt_lahir,tgl_lahir,iddivisi,idjabatan,alamat) values
+    -> (660,'James Vowles','Laki-Laki','London',19800401,1,1,'Milton Keynes'),
+    -> (661, 'Toto Wolf','Laki-Laki','Birmingham',19770905,1,2,'Silverstone'),
+    -> (662,'Cristian Horner','Laki-Laki','Wales',19751014,1,3,'Brisbane'),
+    -> (663,'Adrian Newey','Laki-Laki','Manchester',19680817,1,4,'Silverstone'),
+    -> (664,'Max Verstapeen','Laki-Laki','Amsterdam',19891201,1,4,'Assen'),
+    -> (665,'Daniel Kvyat','Laki-Laki','Moskow',19900403,2,1,'Manila'),
+    -> (666,'Lance Stroll','Laki-Laki','Montreal','19930913,2,2,'New York'),
+    '> '/
+    -> (666,'Lance Stroll','Laki-Laki','Montreal',19930913,2,2,'New York'),
+    -> (667,'Sean Gelael','Laki-Laki','Jakarta',19940524,2,3,'Spielberg'),
+    -> (668,'Nico Hulcenberg','Laki-Laki','Berlin',19880709,2,4,'Spielberg'),
+    -> (669,'Kevin Magnussen','Laki-Laki,'Berlin',19850417,2,4,'Birmingham'),
+    '> '/
+    -> (670,'Sergio Perez','Laki-Laki','Mexico City',19900717,3,1,'Silverstone'),
+    -> (671,'Yuki Tsunoda','Laki-Laki','Tokyo',19990818,3,2,'Shanghai'),
+    -> (671,'Yuki Tsunoda','Laki-Laki','Tokyo',19990818,3,2,'Shanghai'),
+    -> (672,'Zhou Guanyu','Laki-Laki','Shanghai',19990203,3,3,'Shanghai'),
+    -> (673,'Liam Lawson','Laki-Laki','Perth',20000301,3,4,'Shanghai'),
+    -> (675,'Fernando Alonso','Laki-Laki','Madrid',19800923,4,1,'Barcelona'),
+    -> (674,'Daniel Ricciardo','Laki-Laki','Austin',19950929,3,4,'Shanghai'),
+    -> (676,'Carlos Sainz','Laki-Laki','Barcelona',19980905,4,2,'Barcelona'),
+    -> (677,'Carles Leclerc','Laki-Laki','Monaco',19991205,4,3,'Barcelona'),
+    -> (678,'George Russel','Laki-Laki','London',19970403,4,4,'Milton Keynes'),
+    -> (679,'Lewis Hamilton','Laki-Laki','London',19900719,4,4,'Milton Keynes'),
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'New York'),
+'/
+(666,'Lance Stroll','Laki-Laki','Montreal',19930913,2,2,'New Y...' at line 9
+MariaDB [dbpegawai1]> INSERT INTO pegawai
+    -> (nip,nama,gender,tmpt_lahir,tgl_lahir,iddivisi,idjabatan,alamat) values
+    -> (660,'James Vowles','Laki-Laki','London',19800401,1,1,'Silverstone'),
+    -> (661, 'Toto Wolf','Laki-Laki','Birmingham',19770905,1,2,'Silverstone'),
+    -> (662,'Cristian Horner','Laki-Laki','Wales',19751014,1,3,'SIlverstone'),
+    -> (663,'Adrian Newey','Laki-Laki','Manchester',19680817,1,4,'Silverstone'),
+    -> (664,'Max Verstapeen','Laki-Laki','Amsterdam',19891201,1,4,'Assen'),
+    -> (665,'Daniel Kvyat','Laki-Laki','Moskow',19900403,2,1,'Manila'),
+    -> (666,'Lance Stroll','Laki-Laki','Montreal',19930913,2,2,'Silverstone'),
+    -> (667,'Sean Gelael','Laki-Laki','Jakarta',19940524,2,3,'Spielberg'),
+    -> (668,'Nico Hulcenberg','Laki-Laki','Berlin',19880709,2,4,'Spielberg'),
+    -> (669,'Kevin Magnussen','Laki-Laki','Berlin',19850417,2,4,'Birmingham'),
+    -> (670,'Sergio Perez','Laki-Laki','Mexico City',19900717,3,1,'Silverstone'),
+    -> (671,'Yuki Tsunoda','Laki-Laki','Tokyo',19990818,3,2,'Shanghai'),
+    -> (672,'Zhou Guanyu','Laki-Laki','Shanghai',19990203,3,3,'Shanghai'),
+    ->
+    -> (673,'Liam Lawson','Laki-Laki','Perth',20000301,3,4,'Shanghai'),
+    -> (674,'Daniel Ricciardo','Laki-Laki','Austin',19950929,3,4,'Shanghai'),
+    -> (675,'Fernando Alonso','Laki-Laki','Madrid',19800923,4,1,'Barcelona'),
+    -> (676,'Carlos Sainz','Laki-Laki','Barcelona',19980905,4,2,'Barcelona'),
+    -> (677,'Carles Leclerc','Laki-Laki','Monaco',19991205,4,3,'Barcelona'),
+    -> (678,'George Russel','Laki-Laki','London',19970403,4,4,'Milton Keynes'),
+    -> (679,'Lewis Hamilton','Laki-Laki','London',19900719,4,4,'Milton Keynes');
+Query OK, 20 rows affected (0.006 sec)
+Records: 20  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai1]> SELECT * FROM pegawai;
++----+-----+------------------+-----------+-------------+------------+----------+-----------+---------------+
+| id | nip | nama             | gender    | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+---------------+
+|  1 | 660 | James Vowles     | Laki-Laki | London      | 1980-04-01 |        1 |         1 | Silverstone   |
+|  2 | 661 | Toto Wolf        | Laki-Laki | Birmingham  | 1977-09-05 |        1 |         2 | Silverstone   |
+|  3 | 662 | Cristian Horner  | Laki-Laki | Wales       | 1975-10-14 |        1 |         3 | SIlverstone   |
+|  4 | 663 | Adrian Newey     | Laki-Laki | Manchester  | 1968-08-17 |        1 |         4 | Silverstone   |
+|  5 | 664 | Max Verstapeen   | Laki-Laki | Amsterdam   | 1989-12-01 |        1 |         4 | Assen         |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki | Moskow      | 1990-04-03 |        2 |         1 | Manila        |
+|  7 | 666 | Lance Stroll     | Laki-Laki | Montreal    | 1993-09-13 |        2 |         2 | Silverstone   |
+|  8 | 667 | Sean Gelael      | Laki-Laki | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg     |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki | Berlin      | 1988-07-09 |        2 |         4 | Spielberg     |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki | Berlin      | 1985-04-17 |        2 |         4 | Birmingham    |
+| 11 | 670 | Sergio Perez     | Laki-Laki | Mexico City | 1990-07-17 |        3 |         1 | Silverstone   |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai      |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai      |
+| 14 | 673 | Liam Lawson      | Laki-Laki | Perth       | 2000-03-01 |        3 |         4 | Shanghai      |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki | Austin      | 1995-09-29 |        3 |         4 | Shanghai      |
+| 16 | 675 | Fernando Alonso  | Laki-Laki | Madrid      | 1980-09-23 |        4 |         1 | Barcelona     |
+| 17 | 676 | Carlos Sainz     | Laki-Laki | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona     |
+| 18 | 677 | Carles Leclerc   | Laki-Laki | Monaco      | 1999-12-05 |        4 |         3 | Barcelona     |
+| 19 | 678 | George Russel    | Laki-Laki | London      | 1997-04-03 |        4 |         4 | Milton Keynes |
+| 20 | 679 | Lewis Hamilton   | Laki-Laki | London      | 1990-07-19 |        4 |         4 | Milton Keynes |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+---------------+
+20 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> UPDATE pegawai SET alamat='Madrid',idjabatan=1,tgl_lahir=19800401 WHERE nip=660,
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1
+MariaDB [dbpegawai1]> UPDATE pegawai SET alamat='Madrid',idjabatan=1,tgl_lahir=19800401 WHERE nip=660;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> UPDATE pegawai SET alamat='Barcelona',idjabatan=2,tgl_lahir=19770905 WHERE nip=661;
+Query OK, 1 row affected (0.032 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> UPDATE pegawai SET alamat='Valencia',idjabatan=3,tgl_lahir=19751014 WHERE nip=662;
+Query OK, 1 row affected (0.031 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> UPDATE pegawai SET alamat='Ambon',idjabatan=4,tgl_lahir=19891201 WHERE nip=664;
+Query OK, 1 row affected (0.032 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> UPDATE pegawai SET alamat='Jayapura',idjabatan=4,tgl_lahir=19900403 WHERE nip=665;
+Query OK, 1 row affected (0.032 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> SELECT * FROM pegawai;
++----+-----+------------------+-----------+-------------+------------+----------+-----------+---------------+
+| id | nip | nama             | gender    | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+---------------+
+|  1 | 660 | James Vowles     | Laki-Laki | London      | 1980-04-01 |        1 |         1 | Madrid        |
+|  2 | 661 | Toto Wolf        | Laki-Laki | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona     |
+|  3 | 662 | Cristian Horner  | Laki-Laki | Wales       | 1975-10-14 |        1 |         3 | Valencia      |
+|  4 | 663 | Adrian Newey     | Laki-Laki | Manchester  | 1968-08-17 |        1 |         4 | Silverstone   |
+|  5 | 664 | Max Verstapeen   | Laki-Laki | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon         |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki | Moskow      | 1990-04-03 |        2 |         4 | Jayapura      |
+|  7 | 666 | Lance Stroll     | Laki-Laki | Montreal    | 1993-09-13 |        2 |         2 | Silverstone   |
+|  8 | 667 | Sean Gelael      | Laki-Laki | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg     |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki | Berlin      | 1988-07-09 |        2 |         4 | Spielberg     |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki | Berlin      | 1985-04-17 |        2 |         4 | Birmingham    |
+| 11 | 670 | Sergio Perez     | Laki-Laki | Mexico City | 1990-07-17 |        3 |         1 | Silverstone   |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai      |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai      |
+| 14 | 673 | Liam Lawson      | Laki-Laki | Perth       | 2000-03-01 |        3 |         4 | Shanghai      |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki | Austin      | 1995-09-29 |        3 |         4 | Shanghai      |
+| 16 | 675 | Fernando Alonso  | Laki-Laki | Madrid      | 1980-09-23 |        4 |         1 | Barcelona     |
+| 17 | 676 | Carlos Sainz     | Laki-Laki | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona     |
+| 18 | 677 | Carles Leclerc   | Laki-Laki | Monaco      | 1999-12-05 |        4 |         3 | Barcelona     |
+| 19 | 678 | George Russel    | Laki-Laki | London      | 1997-04-03 |        4 |         4 | Milton Keynes |
+| 20 | 679 | Lewis Hamilton   | Laki-Laki | London      | 1990-07-19 |        4 |         4 | Milton Keynes |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+---------------+
+20 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> DELETE FROM pegawai WHERE nip=678;
+Query OK, 1 row affected (0.030 sec)
+
+MariaDB [dbpegawai1]> DELETE FROM pegawai WHERE nip=679;
+Query OK, 1 row affected (0.032 sec)
+
+MariaDB [dbpegawai1]> ALTER TABLE pegawai ADD COLUMN berat_badan FLOAT not null;
+Query OK, 0 rows affected (0.036 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai1]> UPDATE pegawai SET berat_badan=65 WHERE nip=660;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> SELECT * FROM pegawai;
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+
+| id | nip | nama             | gender    | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+
+|  1 | 660 | James Vowles     | Laki-Laki | London      | 1980-04-01 |        1 |         1 | Madrid      |
+65 |
+|  2 | 661 | Toto Wolf        | Laki-Laki | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona   |
+ 0 |
+|  3 | 662 | Cristian Horner  | Laki-Laki | Wales       | 1975-10-14 |        1 |         3 | Valencia    |
+ 0 |
+|  4 | 663 | Adrian Newey     | Laki-Laki | Manchester  | 1968-08-17 |        1 |         4 | Silverstone |
+ 0 |
+|  5 | 664 | Max Verstapeen   | Laki-Laki | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon       |
+ 0 |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki | Moskow      | 1990-04-03 |        2 |         4 | Jayapura    |
+ 0 |
+|  7 | 666 | Lance Stroll     | Laki-Laki | Montreal    | 1993-09-13 |        2 |         2 | Silverstone |
+ 0 |
+|  8 | 667 | Sean Gelael      | Laki-Laki | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg   |
+ 0 |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki | Berlin      | 1988-07-09 |        2 |         4 | Spielberg   |
+ 0 |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki | Berlin      | 1985-04-17 |        2 |         4 | Birmingham  |
+ 0 |
+| 11 | 670 | Sergio Peoda     | Laki-Laki | Tokyo       | 1999-08-18 |        3 |         1 | Silverstone |
+ 0 |                  alter table pegawai add column berat_badan float not null;
+ERROR 1060 (42S21): Duplicate column name 'berat_badan' | 1999-08-18 |        3 |         2 | Shanghai    |
+MariaDB [dbpegawai1]> alter table pegawai add column berat_badan float not null;
+| 13 | 672 | Zhou Guanyu      | Laki-Laki | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |
+ 0 |
+| 14 | 673 | Liam Lawson      | Laki-Laki | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |
+ 0 |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki | Austin      | 1995-09-29 |        3 |         4 | Shanghai    |
+ 0 |
+| 16 | 675 | Fernando Alonso  | Laki-Laki | Madrid      | 1980-09-23 |        4 |         1 | Barcelona   |
+ 0 |
+| 17 | 676 | Carlos Sainz     | Laki-Laki | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona   |
+ 0 |
+| 18 | 677 | Carles Leclerc   | Laki-Laki | Monaco      | 1999-12-05 |        4 |         3 | Barcelona   |
+ 0 |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> SELECT * FROM pegawai;
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+
+| id | nip | nama             | gender    | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+
+|  1 | 660 | James Vowles     | Laki-Laki | London      | 1980-04-01 |        1 |         1 | Madrid      |
+65 |
+|  2 | 661 | Toto Wolf        | Laki-Laki | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona   |
+ 0 |
+|  3 | 662 | Cristian Horner  | Laki-Laki | Wales       | 1975-10-14 |        1 |         3 | Valencia    |
+ 0 |
+|  4 | 663 | Adrian Newey     | Laki-Laki | Manchester  | 1968-08-17 |        1 |         4 | Silverstone |
+ 0 |
+|  5 | 664 | Max Verstapeen   | Laki-Laki | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon       |
+ 0 |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki | Moskow      | 1990-04-03 |        2 |         4 | Jayapura    |
+ 0 |
+|  7 | 666 | Lance Stroll     | Laki-Laki | Montreal    | 1993-09-13 |        2 |         2 | Silverstone |
+ 0 |
+|  8 | 667 | Sean Gelael      | Laki-Laki | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg   |
+ 0 |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki | Berlin      | 1988-07-09 |        2 |         4 | Spielberg   |
+ 0 |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki | Berlin      | 1985-04-17 |        2 |         4 | Birmingham  |
+ 0 |
+| 11 | 670 | Sergio Perez     | Laki-Laki | Mexico City | 1990-07-17 |        3 |         1 | Silverstone |
+ 0 |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai    |
+ 0 |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |
+ 0 |
+| 14 | 673 | Liam Lawson      | Laki-Laki | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |
+ 0 |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki | Austin      | 1995-09-29 |        3 |         4 | Shanghai    |
+ 0 |
+| 16 | 675 | Fernando Alonso  | Laki-Laki | Madrid      | 1980-09-23 |        4 |         1 | Barcelona   |
+ 0 |
+| 17 | 676 | Carlos Sainz     | Laki-Laki | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona   |
+ 0 |
+| 18 | 677 | Carles Leclerc   | Laki-Laki | Monaco      | 1999-12-05 |        4 |         3 | Barcelona   |
+ 0 |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> alter table
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      alter table pegawai add column umur int not null;
+Query OK, 0 rows affected (0.035 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=40 where nip=660;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=44 where nip=661;
+Query OK, 1 row affected (0.032 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=46 where nip=662;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=42 where nip=663;
+Query OK, 1 row affected (0.047 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=39 where nip=664;
+Query OK, 1 row affected (0.032 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=50 where nip=665;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=34 where nip=666;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=38 where nip=667;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=35 where nip=668;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=37 where nip=669;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=31 where nip=670;
+Query OK, 1 row affected (0.031 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=38 where nip=671;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=44 where nip=672;
+Query OK, 1 row affected (0.042 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=43 where nip=673;
+Query OK, 1 row affected (0.032 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=41 where nip=674;
+Query OK, 1 row affected (0.031 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=29 where nip=675;
+Query OK, 1 row affected (0.031 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=33 where nip=676;
+Query OK, 1 row affected (0.031 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> update pegawai set umur=32 where nip=677;
+Query OK, 1 row affected (0.030 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai1]> SELECT * FROM pegawai;
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama             | gender    | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+------+
+|  1 | 660 | James Vowles     | Laki-Laki | London      | 1980-04-01 |        1 |         1 | Madrid      |          65 |   40 |
+|  2 | 661 | Toto Wolf        | Laki-Laki | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona   |           0 |   44 |
+|  3 | 662 | Cristian Horner  | Laki-Laki | Wales       | 1975-10-14 |        1 |         3 | Valencia    |           0 |   46 |
+|  4 | 663 | Adrian Newey     | Laki-Laki | Manchester  | 1968-08-17 |        1 |         4 | Silverstone |           0 |   42 |
+|  5 | 664 | Max Verstapeen   | Laki-Laki | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon       |           0 |   39 |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki | Moskow      | 1990-04-03 |        2 |         4 | Jayapura    |           0 |   50 |
+|  7 | 666 | Lance Stroll     | Laki-Laki | Montreal    | 1993-09-13 |        2 |         2 | Silverstone |           0 |   34 |
+|  8 | 667 | Sean Gelael      | Laki-Laki | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg   |           0 |   38 |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki | Berlin      | 1988-07-09 |        2 |         4 | Spielberg   |           0 |   35 |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki | Berlin      | 1985-04-17 |        2 |         4 | Birmingham  |           0 |   37 |
+| 11 | 670 | Sergio Perez     | Laki-Laki | Mexico City | 1990-07-17 |        3 |         1 | Silverstone |           0 |   31 |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai    |           0 |   38 |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |           0 |   44 |
+| 14 | 673 | Liam Lawson      | Laki-Laki | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |           0 |   43 |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki | Austin      | 1995-09-29 |        3 |         4 | Shanghai    |           0 |   41 |
+| 16 | 675 | Fernando Alonso  | Laki-Laki | Madrid      | 1980-09-23 |        4 |         1 | Barcelona   |           0 |   29 |
+| 17 | 676 | Carlos Sainz     | Laki-Laki | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona   |           0 |   33 |
+| 18 | 677 | Carles Leclerc   | Laki-Laki | Monaco      | 1999-12-05 |        4 |         3 | Barcelona   |           0 |   32 |
++----+-----+------------------+-----------+-------------+------------+----------+-----------+-------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> alter table pegawai change gender jenis_kelamin enum('Laki-Laki','Perempuan');
+Query OK, 0 rows affected (0.073 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai1]> select nip,nama,jenis_kelamin,tgl_lahir,alamat from pegawai;
++-----+------------------+---------------+------------+-------------+
+| nip | nama             | jenis_kelamin | tgl_lahir  | alamat      |
++-----+------------------+---------------+------------+-------------+
+| 660 | James Vowles     | Laki-Laki     | 1980-04-01 | Madrid      |
+| 661 | Toto Wolf        | Laki-Laki     | 1977-09-05 | Barcelona   |
+| 662 | Cristian Horner  | Laki-Laki     | 1975-10-14 | Valencia    |
+| 663 | Adrian Newey     | Laki-Laki     | 1968-08-17 | Silverstone |
+| 664 | Max Verstapeen   | Laki-Laki     | 1989-12-01 | Ambon       |
+| 665 | Daniel Kvyat     | Laki-Laki     | 1990-04-03 | Jayapura    |
+| 666 | Lance Stroll     | Laki-Laki     | 1993-09-13 | Silverstone |
+| 667 | Sean Gelael      | Laki-Laki     | 1994-05-24 | Spielberg   |
+| 668 | Nico Hulcenberg  | Laki-Laki     | 1988-07-09 | Spielberg   |
+| 669 | Kevin Magnussen  | Laki-Laki     | 1985-04-17 | Birmingham  |
+| 670 | Sergio Perez     | Laki-Laki     | 1990-07-17 | Silverstone |
+| 671 | Yuki Tsunoda     | Laki-Laki     | 1999-08-18 | Shanghai    |
+| 672 | Zhou Guanyu      | Laki-Laki     | 1999-02-03 | Shanghai    |
+| 673 | Liam Lawson      | Laki-Laki     | 2000-03-01 | Shanghai    |
+| 674 | Daniel Ricciardo | Laki-Laki     | 1995-09-29 | Shanghai    |
+| 675 | Fernando Alonso  | Laki-Laki     | 1980-09-23 | Barcelona   |
+| 676 | Carlos Sainz     | Laki-Laki     | 1998-09-05 | Barcelona   |
+| 677 | Carles Leclerc   | Laki-Laki     | 1999-12-05 | Barcelona   |
++-----+------------------+---------------+------------+-------------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nama,jenis_kelamin from pegawai where jenis_kelamin='Laki-Laki';
++------------------+---------------+
+| nama             | jenis_kelamin |
++------------------+---------------+
+| James Vowles     | Laki-Laki     |
+| Toto Wolf        | Laki-Laki     |
+| Cristian Horner  | Laki-Laki     |
+| Adrian Newey     | Laki-Laki     |
+| Max Verstapeen   | Laki-Laki     |
+| Daniel Kvyat     | Laki-Laki     |
+| Lance Stroll     | Laki-Laki     |
+| Sean Gelael      | Laki-Laki     |
+| Nico Hulcenberg  | Laki-Laki     |
+| Kevin Magnussen  | Laki-Laki     |
+| Sergio Perez     | Laki-Laki     |
+| Yuki Tsunoda     | Laki-Laki     |
+| Zhou Guanyu      | Laki-Laki     |
+| Liam Lawson      | Laki-Laki     |
+| Daniel Ricciardo | Laki-Laki     |
+| Fernando Alonso  | Laki-Laki     |
+| Carlos Sainz     | Laki-Laki     |
+| Carles Leclerc   | Laki-Laki     |
++------------------+---------------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nama iddivisi,jenis_kelamin from pegawai where iddivisi=4 and jenis_kelamin='Perempuan';
+Empty set (0.027 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai where iddivisi=3 and umur >37 and jenis_kelamin='Perempuan';
+Empty set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai where nip=677;
++----+-----+----------------+---------------+------------+------------+----------+-----------+-----------+-------------+------+
+| id | nip | nama           | jenis_kelamin | tmpt_lahir | tgl_lahir  | iddivisi | idjabatan | alamat    | berat_badan | umur |
++----+-----+----------------+---------------+------------+------------+----------+-----------+-----------+-------------+------+
+| 18 | 677 | Carles Leclerc | Laki-Laki     | Monaco     | 1999-12-05 |        4 |         3 | Barcelona |           0 |   32 |
++----+-----+----------------+---------------+------------+------------+----------+-----------+-----------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai where jenis_kelamin='Laki-Laki';
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama             | jenis_kelamin | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+|  1 | 660 | James Vowles     | Laki-Laki     | London      | 1980-04-01 |        1 |         1 | Madrid      |          65 |   40 |
+|  2 | 661 | Toto Wolf        | Laki-Laki     | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona   |           0 |   44 |
+|  3 | 662 | Cristian Horner  | Laki-Laki     | Wales       | 1975-10-14 |        1 |         3 | Valencia    |           0 |   46 |
+|  4 | 663 | Adrian Newey     | Laki-Laki     | Manchester  | 1968-08-17 |        1 |         4 | Silverstone |           0 |   42 |
+|  5 | 664 | Max Verstapeen   | Laki-Laki     | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon       |           0 |   39 |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki     | Moskow      | 1990-04-03 |        2 |         4 | Jayapura    |           0 |   50 |
+|  7 | 666 | Lance Stroll     | Laki-Laki     | Montreal    | 1993-09-13 |        2 |         2 | Silverstone |           0 |   34 |
+|  8 | 667 | Sean Gelael      | Laki-Laki     | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg   |           0 |   38 |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki     | Berlin      | 1988-07-09 |        2 |         4 | Spielberg   |           0 |   35 |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki     | Berlin      | 1985-04-17 |        2 |         4 | Birmingham  |           0 |   37 |
+| 11 | 670 | Sergio Perez     | Laki-Laki     | Mexico City | 1990-07-17 |        3 |         1 | Silverstone |           0 |   31 |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki     | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai    |           0 |   38 |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki     | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |           0 |   44 |
+| 14 | 673 | Liam Lawson      | Laki-Laki     | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |           0 |   43 |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki     | Austin      | 1995-09-29 |        3 |         4 | Shanghai    |           0 |   41 |
+| 16 | 675 | Fernando Alonso  | Laki-Laki     | Madrid      | 1980-09-23 |        4 |         1 | Barcelona   |           0 |   29 |
+| 17 | 676 | Carlos Sainz     | Laki-Laki     | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona   |           0 |   33 |
+| 18 | 677 | Carles Leclerc   | Laki-Laki     | Monaco      | 1999-12-05 |        4 |         3 | Barcelona   |           0 |   32 |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai where nip in('663','666','669');
++----+-----+-----------------+---------------+------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama            | jenis_kelamin | tmpt_lahir | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+-----------------+---------------+------------+------------+----------+-----------+-------------+-------------+------+
+|  4 | 663 | Adrian Newey    | Laki-Laki     | Manchester | 1968-08-17 |        1 |         4 | Silverstone |           0 |   42 |
+|  7 | 666 | Lance Stroll    | Laki-Laki     | Montreal   | 1993-09-13 |        2 |         2 | Silverstone |           0 |   34 |
+| 10 | 669 | Kevin Magnussen | Laki-Laki     | Berlin     | 1985-04-17 |        2 |         4 | Birmingham  |           0 |   37 |
++----+-----+-----------------+---------------+------------+------------+----------+-----------+-------------+-------------+------+
+3 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai where tmpt_lahir not in ('Austin','Monaco');
++----+-----+-----------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama            | jenis_kelamin | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+-----------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+|  1 | 660 | James Vowles    | Laki-Laki     | London      | 1980-04-01 |        1 |         1 | Madrid      |          65 |   40 |
+|  2 | 661 | Toto Wolf       | Laki-Laki     | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona   |           0 |   44 |
+|  3 | 662 | Cristian Horner | Laki-Laki     | Wales       | 1975-10-14 |        1 |         3 | Valencia    |           0 |   46 |
+|  4 | 663 | Adrian Newey    | Laki-Laki     | Manchester  | 1968-08-17 |        1 |         4 | Silverstone |           0 |   42 |
+|  5 | 664 | Max Verstapeen  | Laki-Laki     | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon       |           0 |   39 |
+|  6 | 665 | Daniel Kvyat    | Laki-Laki     | Moskow      | 1990-04-03 |        2 |         4 | Jayapura    |           0 |   50 |
+|  7 | 666 | Lance Stroll    | Laki-Laki     | Montreal    | 1993-09-13 |        2 |         2 | Silverstone |           0 |   34 |
+|  8 | 667 | Sean Gelael     | Laki-Laki     | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg   |           0 |   38 |
+|  9 | 668 | Nico Hulcenberg | Laki-Laki     | Berlin      | 1988-07-09 |        2 |         4 | Spielberg   |           0 |   35 |
+| 10 | 669 | Kevin Magnussen | Laki-Laki     | Berlin      | 1985-04-17 |        2 |         4 | Birmingham  |           0 |   37 |
+| 11 | 670 | Sergio Perez    | Laki-Laki     | Mexico City | 1990-07-17 |        3 |         1 | Silverstone |           0 |   31 |
+| 12 | 671 | Yuki Tsunoda    | Laki-Laki     | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai    |           0 |   38 |
+| 13 | 672 | Zhou Guanyu     | Laki-Laki     | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |           0 |   44 |
+| 14 | 673 | Liam Lawson     | Laki-Laki     | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |           0 |   43 |
+| 16 | 675 | Fernando Alonso | Laki-Laki     | Madrid      | 1980-09-23 |        4 |         1 | Barcelona   |           0 |   29 |
+| 17 | 676 | Carlos Sainz    | Laki-Laki     | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona   |           0 |   33 |
++----+-----+-----------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+16 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai order by asc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'asc' at line 1
+MariaDB [dbpegawai1]> select * from pegawai order by nama asc;
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama             | jenis_kelamin | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+|  4 | 663 | Adrian Newey     | Laki-Laki     | Manchester  | 1968-08-17 |        1 |         4 | Silverstone |           0 |   42 |
+| 18 | 677 | Carles Leclerc   | Laki-Laki     | Monaco      | 1999-12-05 |        4 |         3 | Barcelona   |           0 |   32 |
+| 17 | 676 | Carlos Sainz     | Laki-Laki     | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona   |           0 |   33 |
+|  3 | 662 | Cristian Horner  | Laki-Laki     | Wales       | 1975-10-14 |        1 |         3 | Valencia    |           0 |   46 |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki     | Moskow      | 1990-04-03 |        2 |         4 | Jayapura    |           0 |   50 |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki     | Austin      | 1995-09-29 |        3 |         4 | Shanghai    |           0 |   41 |
+| 16 | 675 | Fernando Alonso  | Laki-Laki     | Madrid      | 1980-09-23 |        4 |         1 | Barcelona   |           0 |   29 |
+|  1 | 660 | James Vowles     | Laki-Laki     | London      | 1980-04-01 |        1 |         1 | Madrid      |          65 |   40 |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki     | Berlin      | 1985-04-17 |        2 |         4 | Birmingham  |           0 |   37 |
+|  7 | 666 | Lance Stroll     | Laki-Laki     | Montreal    | 1993-09-13 |        2 |         2 | Silverstone |           0 |   34 |
+| 14 | 673 | Liam Lawson      | Laki-Laki     | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |           0 |   43 |
+|  5 | 664 | Max Verstapeen   | Laki-Laki     | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon       |           0 |   39 |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki     | Berlin      | 1988-07-09 |        2 |         4 | Spielberg   |           0 |   35 |
+|  8 | 667 | Sean Gelael      | Laki-Laki     | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg   |           0 |   38 |
+| 11 | 670 | Sergio Perez     | Laki-Laki     | Mexico City | 1990-07-17 |        3 |         1 | Silverstone |           0 |   31 |
+|  2 | 661 | Toto Wolf        | Laki-Laki     | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona   |           0 |   44 |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki     | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai    |           0 |   38 |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki     | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |           0 |   44 |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai
+    -> order by berat_badan desc;
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama             | jenis_kelamin | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+|  1 | 660 | James Vowles     | Laki-Laki     | London      | 1980-04-01 |        1 |         1 | Madrid      |          65 |   40 |
+|  2 | 661 | Toto Wolf        | Laki-Laki     | Birmingham  | 1977-09-05 |        1 |         2 | Barcelona   |           0 |   44 |
+|  3 | 662 | Cristian Horner  | Laki-Laki     | Wales       | 1975-10-14 |        1 |         3 | Valencia    |           0 |   46 |
+|  4 | 663 | Adrian Newey     | Laki-Laki     | Manchester  | 1968-08-17 |        1 |         4 | Silverstone |           0 |   42 |
+|  5 | 664 | Max Verstapeen   | Laki-Laki     | Amsterdam   | 1989-12-01 |        1 |         4 | Ambon       |           0 |   39 |
+|  6 | 665 | Daniel Kvyat     | Laki-Laki     | Moskow      | 1990-04-03 |        2 |         4 | Jayapura    |           0 |   50 |
+|  7 | 666 | Lance Stroll     | Laki-Laki     | Montreal    | 1993-09-13 |        2 |         2 | Silverstone |           0 |   34 |
+|  8 | 667 | Sean Gelael      | Laki-Laki     | Jakarta     | 1994-05-24 |        2 |         3 | Spielberg   |           0 |   38 |
+|  9 | 668 | Nico Hulcenberg  | Laki-Laki     | Berlin      | 1988-07-09 |        2 |         4 | Spielberg   |           0 |   35 |
+| 10 | 669 | Kevin Magnussen  | Laki-Laki     | Berlin      | 1985-04-17 |        2 |         4 | Birmingham  |           0 |   37 |
+| 11 | 670 | Sergio Perez     | Laki-Laki     | Mexico City | 1990-07-17 |        3 |         1 | Silverstone |           0 |   31 |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki     | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai    |           0 |   38 |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki     | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |           0 |   44 |
+| 14 | 673 | Liam Lawson      | Laki-Laki     | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |           0 |   43 |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki     | Austin      | 1995-09-29 |        3 |         4 | Shanghai    |           0 |   41 |
+| 16 | 675 | Fernando Alonso  | Laki-Laki     | Madrid      | 1980-09-23 |        4 |         1 | Barcelona   |           0 |   29 |
+| 17 | 676 | Carlos Sainz     | Laki-Laki     | Barcelona   | 1998-09-05 |        4 |         2 | Barcelona   |           0 |   33 |
+| 18 | 677 | Carles Leclerc   | Laki-Laki     | Monaco      | 1999-12-05 |        4 |         3 | Barcelona   |           0 |   32 |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai limit 5;
++----+-----+-----------------+---------------+------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama            | jenis_kelamin | tmpt_lahir | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+-----------------+---------------+------------+------------+----------+-----------+-------------+-------------+------+
+|  1 | 660 | James Vowles    | Laki-Laki     | London     | 1980-04-01 |        1 |         1 | Madrid      |          65 |   40 |
+|  2 | 661 | Toto Wolf       | Laki-Laki     | Birmingham | 1977-09-05 |        1 |         2 | Barcelona   |           0 |   44 |
+|  3 | 662 | Cristian Horner | Laki-Laki     | Wales      | 1975-10-14 |        1 |         3 | Valencia    |           0 |   46 |
+|  4 | 663 | Adrian Newey    | Laki-Laki     | Manchester | 1968-08-17 |        1 |         4 | Silverstone |           0 |   42 |
+|  5 | 664 | Max Verstapeen  | Laki-Laki     | Amsterdam  | 1989-12-01 |        1 |         4 | Ambon       |           0 |   39 |
++----+-----+-----------------+---------------+------------+------------+----------+-----------+-------------+-------------+------+
+5 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select * from pegawai
+    -> limit 5 offset 10;
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+| id | nip | nama             | jenis_kelamin | tmpt_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+| 11 | 670 | Sergio Perez     | Laki-Laki     | Mexico City | 1990-07-17 |        3 |         1 | Silverstone |           0 |   31 |
+| 12 | 671 | Yuki Tsunoda     | Laki-Laki     | Tokyo       | 1999-08-18 |        3 |         2 | Shanghai    |           0 |   38 |
+| 13 | 672 | Zhou Guanyu      | Laki-Laki     | Shanghai    | 1999-02-03 |        3 |         3 | Shanghai    |           0 |   44 |
+| 14 | 673 | Liam Lawson      | Laki-Laki     | Perth       | 2000-03-01 |        3 |         4 | Shanghai    |           0 |   43 |
+| 15 | 674 | Daniel Ricciardo | Laki-Laki     | Austin      | 1995-09-29 |        3 |         4 | Shanghai    |           0 |   41 |
++----+-----+------------------+---------------+-------------+------------+----------+-----------+-------------+-------------+------+
+5 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select count(*) as jumlah_pegawai from pegawai;
++----------------+
+| jumlah_pegawai |
++----------------+
+|             18 |
++----------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nip,nama,umur from pegawai where umur=(select max(umur) from pegawai);
++-----+--------------+------+
+| nip | nama         | umur |
++-----+--------------+------+
+| 665 | Daniel Kvyat |   50 |
++-----+--------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nip,nama,berat_badan from pegawai
+    -> where berat_badan=(select min(berat_badan) from pegawai);
++-----+------------------+-------------+
+| nip | nama             | berat_badan |
++-----+------------------+-------------+
+| 661 | Toto Wolf        |           0 |
+| 662 | Cristian Horner  |           0 |
+| 663 | Adrian Newey     |           0 |
+| 664 | Max Verstapeen   |           0 |
+| 665 | Daniel Kvyat     |           0 |
+| 666 | Lance Stroll     |           0 |
+| 667 | Sean Gelael      |           0 |
+| 668 | Nico Hulcenberg  |           0 |
+| 669 | Kevin Magnussen  |           0 |
+| 670 | Sergio Perez     |           0 |
+| 671 | Yuki Tsunoda     |           0 |
+| 672 | Zhou Guanyu      |           0 |
+| 673 | Liam Lawson      |           0 |
+| 674 | Daniel Ricciardo |           0 |
+| 675 | Fernando Alonso  |           0 |
+| 676 | Carlos Sainz     |           0 |
+| 677 | Carles Leclerc   |           0 |
++-----+------------------+-------------+
+17 rows in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select avg(umur) as umur_rata-rata from pegawai;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '-rata from pegawai' at line 1
+MariaDB [dbpegawai1]> select avg(umur) as umur_rata2 from pegawai;wai;
++------------+
+| umur_rata2 |
++------------+
+|    38.6667 |
++------------+
+1 row in set (0.001 sec)
+
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'wai' at line 1
+MariaDB [dbpegawai1]> select avg(umur) as umur_rata2 from pegawai;
++------------+
+| umur_rata2 |
++------------+
+|    38.6667 |
++------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select count(*) as jumlah_pegawai_manager from pegawai where jenis_kelamin = 'Laki-Laki' and umur > 40 and idjabatan=2;
++------------------------+
+| jumlah_pegawai_manager |
++------------------------+
+|                      1 |
++------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select count(*) as jumlah_pegawai_manajer from pegawai where jenis_kelamin = 'Laki-Laki' and umur > 40 and idjabatan=2;
++------------------------+
+| jumlah_pegawai_manajer |
++------------------------+
+|                      1 |
++------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select count(*) as jumlah_pegawai_staf from pegawai where jenis_kelamin = 'Perempuan' and umur < 40 and idjabatan=4;
++---------------------+
+| jumlah_pegawai_staf |
++---------------------+
+|                   0 |
++---------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select count(*) as jumlah_pegawai_perempuan from pegawai where jenis_kelamin='Perempuan';
++--------------------------+
+| jumlah_pegawai_perempuan |
++--------------------------+
+|                        0 |
++--------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select sum(1) as jumlah_pegawai_SDM from pegawai where iddivisi=1
+    -> ;
++--------------------+
+| jumlah_pegawai_SDM |
++--------------------+
+|                  5 |
++--------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select iddivisi, count(*) as jumlah_pegawai from pegawai from pegawai group by iddivisi;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'from pegawai group by iddivisi' at line 1
+MariaDB [dbpegawai1]> select iddivisi, count(*) as jumlah_pegawai from pegawai group by iddivisi;
++----------+----------------+
+| iddivisi | jumlah_pegawai |
++----------+----------------+
+|        1 |              5 |
+|        2 |              5 |
+|        3 |              5 |
+|        4 |              3 |
++----------+----------------+
+4 rows in set (0.022 sec)
+
+MariaDB [dbpegawai1]> select jenis_kelamin, count(*) as jumlah_pegawai from pegawai group by jenis_kelamin having count(*) >= 10;
++---------------+----------------+
+| jenis_kelamin | jumlah_pegawai |
++---------------+----------------+
+| Laki-Laki     |             18 |
++---------------+----------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nama from pegawai where nama like 'Carles%';
++----------------+
+| nama           |
++----------------+
+| Carles Leclerc |
++----------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nama from pegawai where nama like '%Alonso';
++-----------------+
+| nama            |
++-----------------+
+| Fernando Alonso |
++-----------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nama from pegawai where nama like '%Wolf%';
++-----------+
+| nama      |
++-----------+
+| Toto Wolf |
++-----------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai1]> select nama from pegawai where nama like '____s';
+Empty set (0.001 sec)
